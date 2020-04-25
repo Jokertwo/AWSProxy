@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: aws-proxy
+server:
+  port: 3000
+aws-configuration:
+  accessKey: test1
+  secretKey: test2

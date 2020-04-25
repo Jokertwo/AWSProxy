@@ -4,5 +4,5 @@ spring:
 server:
   port: 3000
 aws-configuration:
-  accessKey: test1
-  secretKey: test2
+  accessKey: AKIARM52LNK77TB6K65X
+  secretKey: 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

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 
@@ -21,7 +20,7 @@ public interface S3ObjectService {
      *            path to file which should be uploaded
      * @return return info about upload file
      */
-    PutObjectResult uploadFile(String bucketName, String uploadPath, String pathToFile);
+    boolean uploadFile(String bucketName, String uploadPath, String pathToFile);
 
 
     /**

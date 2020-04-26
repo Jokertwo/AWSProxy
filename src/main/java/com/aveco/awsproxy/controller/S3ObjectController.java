@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.aveco.awsproxy.services.S3ObjectService;
 import com.aveco.awsproxy.shared.io.request.UploadFileRequest;
 import com.aveco.awsproxy.shared.io.response.object.ObjectResponse;
+import com.aveco.awsproxy.shared.io.response.object.UploadResponse;
 import com.aveco.awsproxy.shared.util.Utils;
 
 import lombok.extern.log4j.Log4j2;
@@ -75,10 +75,19 @@ public class S3ObjectController {
     }
 
 
+    /**
+     * Upload file to S3 service. This is blocking method. Response is returned after update.
+     * 
+     * @param uploadFileRequest
+     *            request with metadata to upload
+     * @return return information about result
+     */
     @PostMapping("/upload")
-    public PutObjectResult uploadFile(@Valid @RequestBody UploadFileRequest uploadFileRequest) {
-        PutObjectResult result = s3ObjectService.uploadFile(uploadFileRequest.getBucketName(),
+    public UploadResponse uploadFile(@Valid @RequestBody UploadFileRequest uploadFileRequest) {
+        boolean result = s3ObjectService.uploadFile(uploadFileRequest.getBucketName(),
             uploadFileRequest.getObjectPath(), uploadFileRequest.getPathToFile());
-        return result;
+        UploadResponse uploadResponse = new UploadResponse();
+        utils.setIDAndTimestamp(uploadResponse).setUploadSuccessful(result);
+        return uploadResponse;
     }
 }

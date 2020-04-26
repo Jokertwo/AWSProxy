@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -31,7 +30,7 @@ public class S3ObjectServiceImpl implements S3ObjectService {
 
 
     @Override
-    public PutObjectResult uploadFile(String bucketName, String uploadPath, String pathToFile) {
+    public boolean uploadFile(String bucketName, String uploadPath, String pathToFile) {
         File file = new File(pathToFile);
         PutObjectRequest request = new PutObjectRequest(bucketName, uploadPath, file);
         request.withBucketName(bucketName).withKey(uploadPath).withFile(file)
@@ -45,9 +44,10 @@ public class S3ObjectServiceImpl implements S3ObjectService {
         try {
             upload.waitForUploadResult();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("error", e);
+            return false;
         }
-        return null;
+        return true;
     }
 
 

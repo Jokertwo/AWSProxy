@@ -15,6 +15,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.aveco.awsproxy.shared.util.IDProvider;
 import com.aveco.awsproxy.shared.util.impl.IDProviderImpl;
+import com.aveco.awsproxy.shared.util.impl.TimestampProviderImpl;
 
 
 @Configuration
@@ -47,5 +48,11 @@ public class AppConfiguration {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper;
+    }
+
+
+    @Bean
+    public TimestampProviderImpl timestampProvider() {
+        return new TimestampProviderImpl();
     }
 }

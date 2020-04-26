@@ -7,4 +7,5 @@ import lombok.Data;
 public class GeneralResponse {
 
     private long responseId;
+    private String timestamp;
 }

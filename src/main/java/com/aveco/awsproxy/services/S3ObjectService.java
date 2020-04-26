@@ -1,10 +1,11 @@
 package com.aveco.awsproxy.services;
 
 import java.io.File;
+import java.util.List;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 
 public interface S3ObjectService {
@@ -28,7 +29,9 @@ public interface S3ObjectService {
      * 
      * @param bucketName
      *            bucket which content will be listed
+     * @param prefix
+     *            prefix for searching
      * @return return content of bucket
      */
-    ObjectListing listObjects(String bucketName);
+    List<S3ObjectSummary> listObjects(String bucketName, String prefix);
 }

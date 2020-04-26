@@ -1,17 +1,17 @@
 package com.aveco.awsproxy.shared.io.response.bucket;
 
-import java.util.List;
+import java.util.Date;
 
-import com.amazonaws.services.s3.model.Bucket;
-import com.aveco.awsproxy.shared.io.response.GeneralResponse;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class BucketResponse extends GeneralResponse {
+@AllArgsConstructor
+public class BucketResponse {
 
-    private List<Bucket> buckets;
+    /** The name of this S3 bucket */
+    private String name = null;
+
+    /** The date this bucket was created */
+    private Date creationDate = null;
 }

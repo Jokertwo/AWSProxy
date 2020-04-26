@@ -2,6 +2,7 @@ package com.aveco.awsproxy.controller;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,69 +15,90 @@ import com.amazonaws.services.s3.model.Bucket;
 import com.aveco.awsproxy.services.BucketService;
 import com.aveco.awsproxy.shared.io.response.bucket.BucketDeleteResponse;
 import com.aveco.awsproxy.shared.io.response.bucket.BucketExistResponse;
+import com.aveco.awsproxy.shared.io.response.bucket.BucketListResponse;
 import com.aveco.awsproxy.shared.io.response.bucket.BucketResponse;
-import com.aveco.awsproxy.shared.util.IDProvider;
-import com.aveco.awsproxy.shared.util.TimestampProvider;
+import com.aveco.awsproxy.shared.util.Utils;
 
 
 @RestController
 @RequestMapping("/bucket")
 public class BucketController {
 
-    private final IDProvider idProvider;
+    private final Utils utils;
     private final BucketService bucketService;
-    private final TimestampProvider timestampProvider;
 
-    public BucketController(IDProvider idProvider, BucketService bucketService, TimestampProvider timestampProvider) {
-        this.idProvider = idProvider;
+    public BucketController(BucketService bucketService, Utils utils) {
+        this.utils = utils;
         this.bucketService = bucketService;
-        this.timestampProvider = timestampProvider;
     }
 
 
+    /**
+     * List all bucket assigned to account
+     * 
+     * @return return all available buckets
+     */
     @GetMapping
-    public BucketResponse listBuckets() {
+    public BucketListResponse listBuckets() {
         List<Bucket> bucketList = bucketService.listBuckets();
-        BucketResponse bucketResponse = new BucketResponse();
-        bucketResponse.setBuckets(bucketList);
-        bucketResponse.setResponseId(idProvider.createID());
-        bucketResponse.setTimestamp(timestampProvider.createTimestamp());
+        BucketListResponse bucketResponse = new BucketListResponse();
+        bucketResponse = utils.setIDAndTimestamp(bucketResponse);
+        utils.setIDAndTimestamp(bucketResponse).setBuckets(
+            bucketList.stream().map(bucket -> new BucketResponse(bucket.getName(), bucket.getCreationDate()))
+                .collect(Collectors.toList()));
         return bucketResponse;
     }
 
 
+    /**
+     * Create new bucket. Name of created bucket must be unique.
+     * 
+     * @param bucketName
+     *            name of created bucket
+     * @return return basic information about created bucket
+     */
     @PostMapping("/{bucketName}")
-    public BucketResponse createBucket(@PathVariable String bucketName) {
+    public BucketListResponse createBucket(@PathVariable String bucketName) {
         Bucket bucket = bucketService.createBucket(bucketName);
-        BucketResponse bucketResponse = new BucketResponse();
-        bucketResponse.setResponseId(idProvider.createID());
-        bucketResponse.setTimestamp(timestampProvider.createTimestamp());
-        bucketResponse.setBuckets(Collections.singletonList(bucket));
+        BucketListResponse bucketResponse = new BucketListResponse();
+        utils.setIDAndTimestamp(bucketResponse)
+            .setBuckets(Collections.singletonList(new BucketResponse(bucket.getName(), bucket.getCreationDate())));
         return bucketResponse;
     }
 
 
+    /**
+     * Check if bucket with specified mane exist.
+     * 
+     * @param bucketName
+     *            name which should be checked
+     * @return return true if bucket exists
+     */
     @GetMapping("/{bucketName}")
     public BucketExistResponse checkExist(@PathVariable String bucketName) {
-        BucketExistResponse bucketResponse = new BucketExistResponse();
-        bucketResponse.setResponseId(idProvider.createID());
-        bucketResponse.setTimestamp(timestampProvider.createTimestamp());
-        bucketResponse.setBucketExist(false);
+        BucketExistResponse existResponse = new BucketExistResponse();
+        boolean existBucket = false;
         if (bucketService.doesBucketExist(bucketName)) {
-            bucketResponse.setBucketExist(true);
+            existBucket = true;
         }
-        return bucketResponse;
+        utils.setIDAndTimestamp(existResponse).setBucketExist(existBucket);
+        return existResponse;
     }
 
 
+    /**
+     * Delete selected bucket
+     * 
+     * @param bucketName
+     *            bucket new which will be deleted
+     * @return return true if was deleted successful
+     */
     @DeleteMapping("/{bucketName}")
     public BucketDeleteResponse deleteBucket(@PathVariable String bucketName) {
         bucketService.deleteBucket(bucketName);
-        BucketDeleteResponse bucketDeleteResponse = new BucketDeleteResponse();
-        bucketDeleteResponse.setResponseId(idProvider.createID());
-        bucketDeleteResponse.setTimestamp(timestampProvider.createTimestamp());
-        bucketDeleteResponse.setDeleted(true);
-        return bucketDeleteResponse;
+        BucketDeleteResponse deleteResponse = new BucketDeleteResponse();
+        utils.setIDAndTimestamp(deleteResponse).setDeleted(true);
+        return deleteResponse;
     }
 
 }

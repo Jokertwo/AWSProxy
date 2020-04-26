@@ -13,7 +13,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.aveco.awsproxy.shared.util.IDProvider;
+import com.aveco.awsproxy.shared.util.TimestampProvider;
+import com.aveco.awsproxy.shared.util.Utils;
 import com.aveco.awsproxy.shared.util.impl.IDProviderImpl;
 import com.aveco.awsproxy.shared.util.impl.TimestampProviderImpl;
 
@@ -55,7 +59,19 @@ public class AppConfiguration {
 
 
     @Bean
+    public TransferManager transferManager(AmazonS3 amazonS3) {
+        return TransferManagerBuilder.standard().withS3Client(amazonS3).build();
+    }
+
+
+    @Bean
     public TimestampProviderImpl timestampProvider() {
         return new TimestampProviderImpl();
+    }
+
+
+    @Bean
+    public Utils responseUtil(IDProvider idProvider, TimestampProvider timestampProvider) {
+        return new Utils(idProvider, timestampProvider);
     }
 }

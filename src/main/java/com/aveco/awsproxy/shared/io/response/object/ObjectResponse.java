@@ -1,8 +1,6 @@
 package com.aveco.awsproxy.shared.io.response.object;
 
-import java.util.List;
-
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.aveco.awsproxy.shared.io.response.GeneralResponse;
 
 import lombok.Data;
@@ -13,5 +11,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ObjectResponse extends GeneralResponse {
 
-    List<S3Object> objects;
+    ObjectListing objects;
 }

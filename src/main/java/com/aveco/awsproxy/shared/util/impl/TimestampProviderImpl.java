@@ -14,7 +14,7 @@ public class TimestampProviderImpl implements TimestampProvider {
     private final DateTimeFormatter formatter;
 
     public TimestampProviderImpl() {
-        formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL)
             .withLocale(Locale.ENGLISH)
             .withZone(ZoneId.of("UTC"));
     }

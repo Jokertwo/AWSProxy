@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amazonaws.services.s3.model.Bucket;
 import com.aveco.awsproxy.services.BucketService;
-import com.aveco.awsproxy.shared.io.response.BucketResponse;
+import com.aveco.awsproxy.shared.io.response.bucket.BucketExistResponse;
+import com.aveco.awsproxy.shared.io.response.bucket.BucketResponse;
 import com.aveco.awsproxy.shared.util.IDProvider;
 
 
@@ -39,8 +40,7 @@ public class BucketController {
         List<Bucket> bucketList = bucketService.listBuckets();
         BucketResponse bucketResponse = new BucketResponse();
         bucketResponse.setBuckets(bucketList);
-        bucketResponse.setResponseID(idProvider.createID());
-        bucketResponse.setBucketExist(true);
+        bucketResponse.setResponseId(idProvider.createID());
         return bucketResponse;
     }
 
@@ -49,18 +49,16 @@ public class BucketController {
     public BucketResponse createBucket(@PathVariable String bucketName) {
         Bucket bucket = bucketService.createBucket(bucketName);
         BucketResponse bucketResponse = new BucketResponse();
-        bucketResponse.setResponseID(idProvider.createID());
+        bucketResponse.setResponseId(idProvider.createID());
         bucketResponse.setBuckets(Collections.singletonList(bucket));
-        bucketResponse.setBucketExist(true);
         return bucketResponse;
     }
 
 
     @GetMapping("/{bucketName}")
-    public BucketResponse checkExist(@PathVariable String bucketName) {
-        BucketResponse bucketResponse = new BucketResponse();
-        bucketResponse.setResponseID(idProvider.createID());
-        bucketResponse.setBuckets(Collections.emptyList());
+    public BucketExistResponse checkExist(@PathVariable String bucketName) {
+        BucketExistResponse bucketResponse = new BucketExistResponse();
+        bucketResponse.setResponseId(idProvider.createID());
         bucketResponse.setBucketExist(false);
         if (bucketService.doesBucketExist(bucketName)) {
             bucketResponse.setBucketExist(true);

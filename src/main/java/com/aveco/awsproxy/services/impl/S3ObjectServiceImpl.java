@@ -14,7 +14,10 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.aveco.awsproxy.services.S3ObjectService;
 
+import lombok.extern.log4j.Log4j2;
 
+
+@Log4j2
 @Service
 public class S3ObjectServiceImpl implements S3ObjectService {
 
@@ -50,6 +53,7 @@ public class S3ObjectServiceImpl implements S3ObjectService {
 
     @Override
     public List<S3ObjectSummary> listObjects(String bucketName, String prefix) {
+        log.info("Listing objects in bucket: {}, prefix: {}", bucketName, prefix);
         ObjectListing current = amazonS3.listObjects(bucketName, prefix);
         List<S3ObjectSummary> objects = current.getObjectSummaries();
         while (current.isTruncated()) {

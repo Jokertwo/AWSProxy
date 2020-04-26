@@ -21,11 +21,11 @@ import com.aveco.awsproxy.shared.util.Utils;
 import com.aveco.awsproxy.shared.util.impl.IDProviderImpl;
 import com.aveco.awsproxy.shared.util.impl.TimestampProviderImpl;
 
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @Configuration
-@EnableSwagger2
 public class AppConfiguration {
 
     @Bean
@@ -37,7 +37,8 @@ public class AppConfiguration {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public AmazonS3 amazonS3(AWSConfiguration awsConfiguration) {
-
+        log.info("Creating new aws credentials accessKey: {}, secreteKey: {}", awsConfiguration.getAccessKey(),
+            awsConfiguration.getSecretKey());
         AWSCredentials credentials = new BasicAWSCredentials(
             awsConfiguration.getAccessKey(),
             awsConfiguration.getSecretKey());

@@ -18,9 +18,12 @@ import com.aveco.awsproxy.shared.io.request.UploadFileRequest;
 import com.aveco.awsproxy.shared.io.response.object.ObjectResponse;
 import com.aveco.awsproxy.shared.util.Utils;
 
+import lombok.extern.log4j.Log4j2;
+
 
 @RestController
 @RequestMapping("/object")
+@Log4j2
 public class S3ObjectController {
 
     private final S3ObjectService s3ObjectService;
@@ -42,9 +45,11 @@ public class S3ObjectController {
      */
     @GetMapping("/{bucketName}")
     public ObjectResponse listObjects(@PathVariable String bucketName) {
+        log.info("Receive request for listing content of bucket: {}", bucketName);
         List<S3ObjectSummary> list = s3ObjectService.listObjects(bucketName, null);
         ObjectResponse response = new ObjectResponse();
         utils.setIDAndTimestamp(response).setObjects(list);
+        log.info("Send response for listing content of bucket: {}, reponse: {}", bucketName, response);
         return response;
     }
 
@@ -60,9 +65,12 @@ public class S3ObjectController {
      */
     @GetMapping("/{bucketName}/{prefix}")
     public ObjectResponse listObjects(@PathVariable String bucketName, @PathVariable String prefix) {
+        log.info("Receive request for listing content of bucket: {}, prefix: {}", bucketName, prefix);
         List<S3ObjectSummary> list = s3ObjectService.listObjects(bucketName, prefix);
         ObjectResponse response = new ObjectResponse();
         utils.setIDAndTimestamp(response).setObjects(list);
+        log.info("Send response for listing content of bucket: {}, prefix: {}, response: {}", bucketName, prefix,
+            response);
         return response;
     }
 

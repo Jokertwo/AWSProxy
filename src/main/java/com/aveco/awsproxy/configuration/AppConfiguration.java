@@ -1,4 +1,4 @@
-package com.aveco.awsproxy;
+package com.aveco.awsproxy.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -17,8 +17,11 @@ import com.aveco.awsproxy.shared.util.IDProvider;
 import com.aveco.awsproxy.shared.util.impl.IDProviderImpl;
 import com.aveco.awsproxy.shared.util.impl.TimestampProviderImpl;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 
 @Configuration
+@EnableSwagger2
 public class AppConfiguration {
 
     @Bean
